@@ -1,21 +1,15 @@
 import React from 'react'
-import PublicChat from './components/PublicChat'
-import { socket } from './context/socket'
+import { Routes, Route } from "react-router-dom"
+import ChatForm from './components/ChatForm'
+import Chat from "./components/Chat"
 
 const App = () => {
 
-  // Join to general chat
-  const joinChat = () => {
-    socket.emit("general", "general")
-  }
-
   return (
-    <div>Chat app
-      <p>It's
-        <button onClick={joinChat}>Join to chat</button>
-      </p>
-      <PublicChat />
-    </div>
+    <Routes>
+      <Route path="/" element={<ChatForm />} />
+      <Route path="/chat" element={<Chat />} />
+    </Routes>
   )
 }
 

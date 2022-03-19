@@ -4,11 +4,17 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { SocketContext, socket } from "./context/socket"
+import { ChakraProvider } from "@chakra-ui/react"
+import { BrowserRouter } from "react-router-dom"
 
 ReactDOM.render(
   <React.StrictMode>
     <SocketContext.Provider value={socket}>
-      <App />
+      <ChakraProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ChakraProvider>
     </SocketContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')

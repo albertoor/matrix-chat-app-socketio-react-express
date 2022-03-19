@@ -23,12 +23,6 @@ const corsOptions = {
 // middleware
 app.use(cors(corsOptions))
 
-// socket to communication channel between the client and the server
-const getSomeEmit = socket => {
-  const response = new Date() // this is a timestamp
-  socket.emit("fromAPI", response)
-}
-
 // API endpoit
 app.get("/", (req, res) => res.status(200).json({ message: "Hello from server" }))
 
@@ -38,8 +32,9 @@ io.on("connection", (socket) => {
 
   // join to general chat
   socket.on("general", (data) => {
-    socket.join(data)
-    console.log("User Joined To " + data)
+    socket.join(data.room)
+    console.log(socket.id)
+    console.log(`User ${data.username} Joined To ${data.room}`)
   })
 
   // send broadcast message to general
