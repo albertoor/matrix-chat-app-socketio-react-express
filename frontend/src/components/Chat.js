@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { socket } from "../context/socket"
 import Sidebar from "./Sidebar"
 import { Flex } from "@chakra-ui/react"
+import ChatBox from './ChatBox'
 
 const Chat = () => {
   const [usersList, setUsersList] = useState([])
@@ -30,8 +31,9 @@ const Chat = () => {
   }, [])
 
   return (
-    <Flex justifyContent={"space-between"}>
+    <Flex>
       <Sidebar usersList={usersList} />
+      <ChatBox />
       {/* <button onClick={sendMessage}>Send test message</button> */}
     </Flex>
   )
