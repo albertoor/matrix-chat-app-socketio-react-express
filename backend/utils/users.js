@@ -7,7 +7,6 @@ function join(id, username) {
     user = { id, username }
     users.push(user)
   }
-  return user;
 }
 
 function getUsers() {

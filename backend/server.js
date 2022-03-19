@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
     socket.join(data.room)
     console.log(socket.id)
     console.log(`User ${data.username} Joined To ${data.room}`)
+    join(socket.id, data.username)
   })
 
   // send broadcast message to general
@@ -42,6 +43,9 @@ io.on("connection", (socket) => {
     console.log(data)
     socket.to("general").emit("receiveMessage")
   })
+
+  // send all users connected
+  socket.emit("allUsers", getUsers())
 
   // Disconnect
   socket.on('disconnect', () => {
