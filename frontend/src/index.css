@@ -1,9 +1,12 @@
 body {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 * {
   font-family: 'Abel', sans-serif;
+  font-family: 'Hubballi', cursive;
   font-family: 'Nunito', sans-serif;
   font-family: 'Work Sans', sans-serif;
 }
