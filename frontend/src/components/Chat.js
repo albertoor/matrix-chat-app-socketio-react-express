@@ -1,14 +1,17 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { socket } from "../context/socket"
 import { Box, Flex, Input, FormControl, Text, List, ListItem, Center, VStack, IconButton, HStack, Heading, ListIcon } from '@chakra-ui/react'
 import { BiSend } from "react-icons/bi"
 import { useLocation } from 'react-router-dom'
+import moment from "moment-timezone"
+import MessageBox from './MessageBox'
 
 const Chat = () => {
   const [message, setMessage] = useState("")
   const [messageList, setMessageList] = useState([])
   const location = useLocation()
   const username = location.state.username
+  const messagesEndRef = useRef(null)
 
   // Listen message from server
   useEffect(() => {
@@ -30,7 +33,7 @@ const Chat = () => {
   // Submit new message
   const submitMessage = useCallback((e) => {
     e.preventDefault()
-    const content = { username, message, date: new Date() }
+    const content = { username, message, date: moment().format('h:mm a') }
     if (message !== "") {
       socket.emit("sendMessage", content)
       setMessageList([...messageList, content])
@@ -38,6 +41,20 @@ const Chat = () => {
     } else
       alert("Please enter a new message")
   }, [message, username, messageList])
+
+  // Scroll to bottom when new message is received
+  const scrollToBottom = () => {
+    // console.log(messagesEndRef.current.offsetTop)
+    // messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+
+    // return () => scrollToBottom()
+  }, [messageList])
 
   return (
     <Flex
@@ -61,26 +78,35 @@ const Chat = () => {
         </Center>
       </Box>
 
-      <Box h="100%" p={4}>
-        <Flex>
-          <List>
-            {messageList.map((value, key) => (
-              <ListItem key={key}>
-                <Box border={"2px solid var(--matrixColor)"} m={2} p={2} borderRadius="12px 12px 4px 12px">
-                  {value.username} : {value.message}
-                </Box>
+      <Box
+        h="100%"
+        p={4}
+        justifyContent="flex-end"
+        overflowY={"auto"}
+        ref={messagesEndRef}
+      >
+        <List >
+          {messageList.map((value, key) => (
+            <Flex justifyContent={username === value.username ? "flex-end" : "flex-start"} >
+              <ListItem key={key} >
+                <MessageBox
+                  usernameVal={value.username}
+                  messageVal={value.message}
+                  dateVal={value.date}
+                />
               </ListItem>
-            ))}
-          </List>
-        </Flex>
-      </Box>
+            </Flex>
+          ))}
+        </List>
+      </Box >
 
       {/* Box to send message  */}
-      <Box bg={"black"} p={4}>
+      < Box bg={"black"} p={4}>
         <form onSubmit={(e) => submitMessage(e)}>
           <HStack >
             <FormControl>
               <Input
+                autoFocus
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder='Enter Message'
@@ -104,8 +130,8 @@ const Chat = () => {
             />
           </HStack>
         </form>
-      </Box>
-    </Flex>
+      </Box >
+    </Flex >
   )
 }
 
