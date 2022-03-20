@@ -10,12 +10,12 @@ const ChatForm = () => {
   // Join to general chat
   const joinChat = useCallback((e) => {
     e.preventDefault()
-    const data = { room: "general", username: username }
-    socket.emit("general", data)
+    const data = "general"
+    socket.emit("join", data)
     setUsername("")
-    setTimeout(() => {
-      navigate("/chat")
-    }, 1500)
+    navigate("/chat", {
+      state: { username }
+    })
   }, [username, navigate])
 
   return (

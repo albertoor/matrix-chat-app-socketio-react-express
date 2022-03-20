@@ -1,6 +1,11 @@
 const express = require("express")
 const app = express()
 const port = process.env.PORT || 8000
+const cors = require("cors")
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  methods: ["GET", "POST"],
+}
 
 const server = require("http").createServer(app).listen(port, () => {
   console.log(`Server running at port: ${port}`)
@@ -11,14 +16,7 @@ const io = require("socket.io")(server, {
     origin: "http://localhost:3000",
   }
 })
-const cors = require("cors")
 
-const { join, getUsers } = require("./utils/users")
-
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  methods: ["GET", "POST"],
-}
 
 // middleware
 app.use(cors(corsOptions))
@@ -31,21 +29,16 @@ io.on("connection", (socket) => {
   console.log(`New connection: ${socket.id}`)
 
   // join to general chat
-  socket.on("general", (data) => {
-    socket.join(data.room)
-    console.log(socket.id)
-    console.log(`User ${data.username} Joined To ${data.room}`)
-    join(socket.id, data.username)
+  socket.on("join", (data) => {
+    socket.join(data)
+    console.log(`User joined ${data}`)
   })
 
   // send broadcast message to general
   socket.on("sendMessage", (data) => {
-    console.log(data)
-    socket.to("general").emit("receiveMessage")
+    socket.to("general").emit("receiveMessage", data)
   })
 
-  // send all users connected
-  socket.emit("allUsers", getUsers())
 
   // Disconnect
   socket.on('disconnect', () => {
