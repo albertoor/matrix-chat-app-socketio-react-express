@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { socket } from "../context/socket"
-import { Box, Flex, Input, FormControl, Text, List, ListItem, Center, VStack, IconButton, HStack, Heading, ListIcon } from '@chakra-ui/react'
+import { Box, Flex, Input, FormControl, List, ListItem, Center, VStack, IconButton, HStack, Heading } from '@chakra-ui/react'
 import { BiSend } from "react-icons/bi"
 import { useLocation } from 'react-router-dom'
 import moment from "moment-timezone"
@@ -29,7 +29,6 @@ const Chat = () => {
     })
   }, [messageList])
 
-
   // Submit new message
   const submitMessage = useCallback((e) => {
     e.preventDefault()
@@ -44,16 +43,12 @@ const Chat = () => {
 
   // Scroll to bottom when new message is received
   const scrollToBottom = () => {
-    // console.log(messagesEndRef.current.offsetTop)
-    // messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-
   }
 
   useEffect(() => {
     scrollToBottom()
 
-    // return () => scrollToBottom()
   }, [messageList])
 
   return (
